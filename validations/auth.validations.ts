@@ -2,7 +2,7 @@ import * as yup from "yup"
 
 const logInValidation = yup.object({
   email: yup.string().email("Invalid Email").required("Email Address is required!"),
-  password: yup.string().required("Password is required!")
+  password: yup.string().required("Password is required!").min(8, "Passwords must be 8 characters or more.")
 });
 
 const otpValidation = yup.object({

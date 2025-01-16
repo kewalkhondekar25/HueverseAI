@@ -14,11 +14,16 @@ import { Label } from "@/components/ui/label"
 import { useFormik } from "formik"
 import { logInValidation } from "@/validations/auth.validations"
 import Link from "next/link"
+import { useSignIn } from "@clerk/nextjs"
+import { useRouter } from "next/navigation"
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
+
+  const { isLoaded, signIn, setActive} = useSignIn();
+  const router = useRouter();
 
   const formik = useFormik({
     initialValues: {
@@ -26,9 +31,21 @@ export function LoginForm({
       password: ""
     },
     validationSchema: logInValidation,
-    onSubmit: (values) => {
-      values.email = values.email.toLowerCase();
-      console.log(values);
+    onSubmit: async (values) => {
+      try {
+        values.email = values.email.toLowerCase();
+        const result = await signIn?.create({
+          identifier: values.email,
+          password: values.password
+        });
+        if(result?.status === "complete" && setActive){
+          await setActive({ session: result.createdSessionId});
+          router.push("/dashboard")
+        }
+        console.log(values);
+      } catch (error) {
+        console.log(error);
+      }
     }
   });
 
