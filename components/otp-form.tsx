@@ -38,17 +38,13 @@ const OtpVerifyForm = () => {
           code: values.otp
         });
 
-        if (otpResponse?.status !== "complete") {
-          console.log(otpResponse);
-        };
         if (otpResponse?.status === "complete" && setActive) {
           await setActive({ session: otpResponse.createdSessionId });
           router.push("/dashboard");
         };
-        console.log(values);
+        
       } catch (error: any) {
         setErrorMessage(error.errors[0].longMessage);
-        console.log(error);
       } finally {
         setIsLoading(prev => !prev);
       }
