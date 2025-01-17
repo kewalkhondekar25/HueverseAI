@@ -17,13 +17,16 @@ import Link from "next/link"
 import { useSignUp } from "@clerk/nextjs"
 import React, { useState } from "react"
 import { useRouter } from "next/navigation"
+import { Loader2 } from "lucide-react"
+
 
 export function SignupForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
 
-  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const { isLoaded, setActive, signUp } = useSignUp();
   const router = useRouter();
 
@@ -36,6 +39,7 @@ export function SignupForm({
 
     onSubmit: async (values) => {
       try {
+        setIsLoading(prev => !prev);
         values.email = values.email.toLowerCase();
         await signUp?.create({
           emailAddress: values.email,
@@ -47,7 +51,9 @@ export function SignupForm({
         router.push("/otp");
       } catch (error: any) {
         console.log(error);
-        setError(error.errors[0].message);
+        setErrorMessage(error.errors[0].message);
+      }finally{
+        setIsLoading(prev => !prev);
       }
       console.log(values);
     }
@@ -102,6 +108,10 @@ export function SignupForm({
                     id="email"
                     type="email"
                     {...formik.getFieldProps("email")}
+                    onChange={(e) => {
+                      formik.handleChange(e);
+                      setErrorMessage(null)
+                    }}
                     name="email"
                     placeholder="m@example.com"
                   />
@@ -116,10 +126,13 @@ export function SignupForm({
                     name="password"
                   />
                   {formik.errors.password && formik.touched.password && <p className="text-red-500 text-sm">{formik.errors.password}</p>}
+                  { errorMessage && <p className="text-red-500 text-sm">{errorMessage}</p>}
                 </div>
-                <Button type="submit" className="w-full">
-                  Sign Up
-                </Button>
+                {isLoading ? (
+                  <Button disabled>
+                    <Loader2 className="animate-spin" />Please wait
+                  </Button>) : (<Button type="submit" className="w-full">Sign Up</Button>)
+                }
               </div>
             </form>
             <div className="text-center text-sm">

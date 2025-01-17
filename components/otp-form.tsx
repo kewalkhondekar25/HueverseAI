@@ -13,9 +13,13 @@ import { useFormik } from "formik";
 import { otpValidation } from "@/validations/auth.validations";
 import { useSignUp } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
+import { Loader2 } from "lucide-react"
+import { useState } from "react";
 
 const OtpVerifyForm = () => {
 
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const { isLoaded, setActive, signUp } = useSignUp();
   const router = useRouter();
 
@@ -27,6 +31,7 @@ const OtpVerifyForm = () => {
 
     onSubmit: async (values) => {
       try {
+        setIsLoading(prev => !prev);
         const otpResponse = await signUp?.attemptEmailAddressVerification({
           code: values.otp
         });
@@ -39,8 +44,11 @@ const OtpVerifyForm = () => {
           router.push("/dashboard");
         };
         console.log(values);
-      } catch (error) {
+      } catch (error: any) {
+        setErrorMessage(error.errors[0].message);
         console.log(error);
+      }finally{
+        setIsLoading(prev => !prev);
       }
     }
   });
@@ -52,12 +60,16 @@ const OtpVerifyForm = () => {
         if (!isLoaded) {
           return;
         };
-        formik.handleSubmit()
+        formik.handleSubmit();
       }}>
         <div className="flex flex-col items-center mt-3 gap-1">
           <Label className="text-lg">One-Time Password</Label>
           <InputOTP maxLength={6}
-            onChange={(e) => formik.setFieldValue("otp", e)}>
+            onChange={(e) => {
+              formik.setFieldValue("otp", e);
+              formik.handleChange(e);
+              setErrorMessage(null);
+            }}>
             <InputOTPGroup>
               <InputOTPSlot index={0} />
               <InputOTPSlot index={1} />
@@ -68,11 +80,13 @@ const OtpVerifyForm = () => {
             </InputOTPGroup>
           </InputOTP>
           <p className="text-red-500 text-sm">{formik.errors.otp}</p>
-          {/* {
-            isError && errorMessage && <p className="text-red-500 text-sm">{errorMessage}</p>
-          } */}
+          { errorMessage && <p className="text-red-500 text-sm">{errorMessage}</p> }
           <p className="text-xs text-gray-500">Please enter the OTP sent to your email.</p>
-          <Button className="mt-3 rounded-lg">Submit</Button>
+          {isLoading ? (
+            <Button disabled>
+              <Loader2 className="animate-spin" />Please wait
+            </Button>) : (<Button type="submit" className="mt-3 rounded-lg">Submit</Button>)
+          }
         </div>
       </form>
     </div>

@@ -16,13 +16,18 @@ import { logInValidation } from "@/validations/auth.validations"
 import Link from "next/link"
 import { useSignIn } from "@clerk/nextjs"
 import { useRouter } from "next/navigation"
+import { useState } from "react"
+import { Loader2 } from "lucide-react"
+
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
 
-  const { isLoaded, signIn, setActive} = useSignIn();
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const { isLoaded, signIn, setActive } = useSignIn();
   const router = useRouter();
 
   const formik = useFormik({
@@ -33,18 +38,24 @@ export function LoginForm({
     validationSchema: logInValidation,
     onSubmit: async (values) => {
       try {
+        setIsLoading(prev => !prev);
         values.email = values.email.toLowerCase();
         const result = await signIn?.create({
           identifier: values.email,
           password: values.password
         });
-        if(result?.status === "complete" && setActive){
-          await setActive({ session: result.createdSessionId});
+        console.log("result: ", result);
+        
+        if (result?.status === "complete" && setActive) {
+          await setActive({ session: result.createdSessionId });
           router.push("/dashboard")
         }
         console.log(values);
-      } catch (error) {
-        console.log(error);
+      } catch (error: any) {
+        setErrorMessage(error.errors[0].message);
+        console.log(error.errors[0].message);
+      }finally{
+        setIsLoading(prev => !prev);
       }
     }
   });
@@ -83,7 +94,7 @@ export function LoginForm({
             <form
               onSubmit={(e) => {
                 e.preventDefault();
-                formik.handleSubmit()
+                formik.handleSubmit();
               }}>
               <div className="grid gap-6">
                 <div className="grid gap-2">
@@ -112,12 +123,19 @@ export function LoginForm({
                     type="password"
                     {...formik.getFieldProps("password")}
                     name="password"
+                    onChange={(e) => {
+                      formik.handleChange(e);
+                      setErrorMessage(null)
+                    }}
                   />
                   {formik.errors.password && formik.touched.password && <p className="text-red-500 text-sm">{formik.errors.password}</p>}
+                  { errorMessage && <p className="text-red-500 text-sm">{errorMessage}</p>}
                 </div>
-                <Button type="submit" className="w-full">
-                  Login
-                </Button>
+                {isLoading ? (
+                  <Button disabled>
+                    <Loader2 className="animate-spin" />Please wait
+                  </Button>) : (<Button type="submit" className="w-full">Login</Button>)
+                }
               </div>
             </form>
             <div className="text-center text-sm">
