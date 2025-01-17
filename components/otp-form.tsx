@@ -6,7 +6,7 @@ import {
   InputOTPSeparator,
   InputOTPSlot,
 } from "@/components/ui/input-otp"
-import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "./ui/card";
 import { Button } from "./ui/button";
 import { Label } from "@radix-ui/react-label";
 import { useFormik } from "formik";
@@ -15,11 +15,13 @@ import { useSignUp } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react"
 import { useState } from "react";
+import Link from "next/link";
 
 const OtpVerifyForm = () => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
   const { isLoaded, setActive, signUp } = useSignUp();
   const router = useRouter();
 
@@ -45,9 +47,9 @@ const OtpVerifyForm = () => {
         };
         console.log(values);
       } catch (error: any) {
-        setErrorMessage(error.errors[0].message);
+        setErrorMessage(error.errors[0].longMessage);
         console.log(error);
-      }finally{
+      } finally {
         setIsLoading(prev => !prev);
       }
     }
@@ -55,40 +57,58 @@ const OtpVerifyForm = () => {
 
   return (
     <div>
-      <form onSubmit={(e) => {
-        e.preventDefault();
-        if (!isLoaded) {
-          return;
-        };
-        formik.handleSubmit();
-      }}>
-        <div className="flex flex-col items-center mt-3 gap-1">
-          <Label className="text-lg">One-Time Password</Label>
-          <InputOTP maxLength={6}
-            onChange={(e) => {
-              formik.setFieldValue("otp", e);
-              formik.handleChange(e);
-              setErrorMessage(null);
-            }}>
-            <InputOTPGroup>
-              <InputOTPSlot index={0} />
-              <InputOTPSlot index={1} />
-              <InputOTPSlot index={2} />
-              <InputOTPSlot index={3} />
-              <InputOTPSlot index={4} />
-              <InputOTPSlot index={5} />
-            </InputOTPGroup>
-          </InputOTP>
-          <p className="text-red-500 text-sm">{formik.errors.otp}</p>
-          { errorMessage && <p className="text-red-500 text-sm">{errorMessage}</p> }
-          <p className="text-xs text-gray-500">Please enter the OTP sent to your email.</p>
-          {isLoading ? (
-            <Button disabled>
-              <Loader2 className="animate-spin" />Please wait
-            </Button>) : (<Button type="submit" className="mt-3 rounded-lg">Submit</Button>)
-          }
-        </div>
-      </form>
+      <Card>
+        <CardHeader>
+          <CardTitle>
+            <Label className="text-lg">One-Time Password</Label>
+          </CardTitle>
+          <CardDescription>Please enter the OTP sent to your email.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={(e) => {
+            e.preventDefault();
+            if (!isLoaded) {
+              return;
+            };
+            formik.handleSubmit()
+          }}>
+            <div className="flex flex-col items-center mt-3 gap-1">
+
+              <InputOTP maxLength={6}
+                onChange={(e) => {
+                  formik.setFieldValue("otp", e);
+                  formik.handleChange(e);
+                  setErrorMessage(null);
+                }}>
+                <InputOTPGroup>
+                  <InputOTPSlot index={0} />
+                  <InputOTPSlot index={1} />
+                  <InputOTPSlot index={2} />
+                  <InputOTPSlot index={3} />
+                  <InputOTPSlot index={4} />
+                  <InputOTPSlot index={5} />
+                </InputOTPGroup>
+              </InputOTP>
+              <p className="text-red-500 text-sm">{formik.errors.otp}</p>
+              {errorMessage && <p className="text-red-500 text-sm">{errorMessage}</p>}
+              <p className="text-xs text-gray-500">Please enter the OTP sent to your email.</p>
+              {isLoading ? (
+                <Button disabled>
+                  <Loader2 className="animate-spin" />Please wait
+                </Button>) : (<Button type="submit" className="mt-3 rounded-lg">Submit</Button>)
+              }
+            </div>
+          </form>
+        </CardContent>
+        <CardFooter className="flex justify-between items-center text-sm">
+          <div className="hover:underline">
+            <Link href="/signup">Back</Link>
+          </div>
+          {/* <div className="hover:underline">
+            <Link href="#">Resend OTP</Link>
+          </div> */}
+        </CardFooter>
+      </Card>
     </div>
   )
 };
