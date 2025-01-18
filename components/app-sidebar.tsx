@@ -35,103 +35,87 @@ const data = {
   },
   teams: [
     {
-      name: "Acme Inc",
+      name: "Enterprise",
       logo: GalleryVerticalEnd,
-      plan: "Enterprise",
+      plan: "Hueverse AI",
     },
     {
-      name: "Acme Corp.",
+      name: "Pro",
       logo: AudioWaveform,
-      plan: "Startup",
+      plan: "Hueverse AI",
     },
     {
-      name: "Evil Corp.",
+      name: "Hobbiest",
       logo: Command,
-      plan: "Free",
+      plan: "Hueverse AI",
     },
   ],
   navMain: [
     {
-      title: "Playground",
+      title: "Generative Image Suite",
       url: "#",
-      icon: SquareTerminal,
+      icon: Bot,
       isActive: true,
       items: [
         {
-          title: "History",
+          title: "Image Fill",
           url: "#",
         },
         {
-          title: "Starred",
+          title: "Image Replace",
           url: "#",
         },
         {
-          title: "Settings",
+          title: "Image Remove",
+          url: "#",
+        },
+        {
+          title: "Image Recolor",
+          url: "#",
+        },
+        {
+          title: "Image Restore",
           url: "#",
         },
       ],
     },
     {
-      title: "Models",
+      title: "AI Image Enhancements",
       url: "#",
-      icon: Bot,
+      icon: SquareTerminal,
       items: [
         {
-          title: "Genesis",
+          title: "Image Enhancer",
           url: "#",
         },
         {
-          title: "Explorer",
-          url: "#",
-        },
-        {
-          title: "Quantum",
+          title: "Image Sharpen",
           url: "#",
         },
       ],
     },
     {
-      title: "Documentation",
+      title: "Background Editing",
       url: "#",
       icon: BookOpen,
       items: [
         {
-          title: "Introduction",
+          title: "Background Removal",
           url: "#",
         },
         {
-          title: "Get Started",
-          url: "#",
-        },
-        {
-          title: "Tutorials",
-          url: "#",
-        },
-        {
-          title: "Changelog",
+          title: "Background Replace",
           url: "#",
         },
       ],
     },
     {
-      title: "Settings",
+      title: "Content Tools",
       url: "#",
       icon: Settings2,
       items: [
         {
-          title: "General",
-          url: "#",
-        },
-        {
-          title: "Team",
-          url: "#",
-        },
-        {
-          title: "Billing",
-          url: "#",
-        },
-        {
-          title: "Limits",
+          title: "Content Extraction",
           url: "#",
         },
       ],
