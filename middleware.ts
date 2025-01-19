@@ -1,3 +1,4 @@
+import { useAuth } from "@clerk/nextjs";
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
@@ -12,6 +13,7 @@ const isPublicRoute = createRouteMatcher([
 export default clerkMiddleware(async (auth, req) => {
 
   const { userId }: any = await auth();
+  
   const currentUrl = new URL(req.url);
   const isAccessingDashboard = currentUrl.pathname === "/dashboard";
 

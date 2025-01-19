@@ -1,6 +1,18 @@
-import React from 'react'
+"use client"
+import { useAuth } from '@clerk/nextjs';
+import React, { useEffect } from 'react'
 
 const page = () => {
+  const { getToken} = useAuth();
+
+  const getSessionToken = async () => {
+    const token = await getToken();
+    // console.log("token", token);
+  };
+
+  useEffect(() => {
+    getSessionToken();
+  })
   return (
     <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
           <div className="grid auto-rows-min gap-4 md:grid-cols-3">
