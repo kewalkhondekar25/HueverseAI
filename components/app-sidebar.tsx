@@ -52,30 +52,18 @@ const data = {
   ],
   navMain: [
     {
-      title: "Generative Image Suite",
+      title: "Generative Imagery",
       url: "#",
       icon: Bot,
       isActive: true,
       items: [
         {
-          title: "Image Fill",
-          url: "#",
+          title: "Text-to-Image",
+          url: "/txt-to-img",
         },
         {
-          title: "Image Replace",
-          url: "#",
-        },
-        {
-          title: "Image Remove",
-          url: "#",
-        },
-        {
-          title: "Image Recolor",
-          url: "#",
-        },
-        {
-          title: "Image Restore",
-          url: "#",
+          title: "Image Variations",
+          url: "img-variations",
         },
       ],
     },
